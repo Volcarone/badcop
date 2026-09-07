@@ -28,7 +28,7 @@ QUERY = 'invoice (late OR unpaid OR overdue OR chasing OR "hasn\'t paid" OR "not
 RELEVANT = re.compile(r"\b(invoice|invoices|invoicing)\b", re.I)
 PAIN = re.compile(r"\b(late|unpaid|overdue|chas\w+|hasn'?t paid|not paid|won'?t pay|ghost\w*|reminder\w*|net ?\d0|late fee|collections?|"
                   r"payment terms|cash ?flow|awkward|follow[- ]?up)\b", re.I)
-PROMO = re.compile(r"\b(i built|we built|i made|launch\w*|beta|feedback on my|check out my|my (app|tool|saas))\b", re.I)
+PROMO = re.compile(r"\b(i built|we built|i made an?|i created an?|launched my|launching my|feedback on my|check out my|my (app|tool|saas|startup))\b", re.I)
 ASKING = re.compile(r"\?|\b(how do|how does|anyone|any (tool|tips|advice)|recommend\w*|what do you|looking for|advice)\b", re.I)
 OFFTOPIC = re.compile(r"\b(salary|underpaid|coworking|landlord|tenant|collections? agenc\w+|debt collector|hiring|job offer|refund)\b", re.I)
 
@@ -111,6 +111,7 @@ def main() -> int:
     ap.add_argument("--out", default=str(Path(__file__).with_name("scout_report.md")))
     ap.add_argument("--seen", default=str(Path(__file__).with_name("scout_seen.json")))
     ap.add_argument("--subreddits", default=",".join(SUBREDDITS))
+    ap.add_argument("--from-raw", action="store_true", help="re-filter the cached scout_raw.json instead of fetching (for tuning)")
     args = ap.parse_args()
     seen_path = Path(args.seen)
     seen = set(json.loads(seen_path.read_text())) if seen_path.exists() else set()
@@ -119,7 +120,23 @@ def main() -> int:
     raw_path = Path(args.out).with_name("scout_raw.json")
     raw_entries: list[dict] = []
     found: list[dict] = []
-    for sub in args.subreddits.split(","):
+    maybe: list[dict] = []
+
+    def consider(entry: dict) -> None:
+        text = f"{entry['title']}\n{entry['body']}"
+        score = relevance(entry["title"], entry["body"])
+        if entry["id"] in seen or len(entry["body"]) < 80:
+            return
+        if score >= 3:
+            found.append({**entry, "kind": classify(text), "score": score})
+        elif RELEVANT.search(text) and ASKING.search(text) and not PROMO.search(text) and not OFFTOPIC.search(text):
+            maybe.append(entry)
+
+    if args.from_raw:
+        for entry in json.loads(raw_path.read_text(encoding="utf-8")):
+            consider(entry)
+        args.subreddits = "cached"
+    for sub in ([] if args.from_raw else args.subreddits.split(",")):
         q = urllib.parse.urlencode({"q": QUERY, "restrict_sr": "1", "sort": "new", "t": "week" if args.days <= 7 else "month", "limit": 50})
         print(f"r/{sub} ...", end=" ", flush=True)
         try:
@@ -143,15 +160,16 @@ def main() -> int:
             link = e.find("a:link", scraper.ATOM)
             entry = {"id": full_id[3:], "subreddit": sub, "title": title, "body": body, "published": when.date().isoformat(),
                      "url": link.get("href") if link is not None else ""}
-            raw_entries.append(entry)
-            score = relevance(title, body)
-            if when < cutoff or len(body) < 80 or score < 3:
+            if when < cutoff:
                 continue
-            found.append({**entry, "kind": classify(text), "score": score})
-            n += 1
+            raw_entries.append(entry)
+            before = len(found)
+            consider(entry)
+            n += len(found) - before
         print(f"{n} new relevant")
 
-    raw_path.write_text(json.dumps(raw_entries, ensure_ascii=False, indent=1), encoding="utf-8")
+    if not args.from_raw:
+        raw_path.write_text(json.dumps(raw_entries, ensure_ascii=False, indent=1), encoding="utf-8")
     found.sort(key=lambda p: (p["score"], p["published"]), reverse=True)
     lines = [f"# BadCop Reddit scout, {datetime.now().date().isoformat()}", "",
              f"{len(found)} new threads in the last {args.days} days across {args.subreddits}. Drafts are answer-first; the tool is one "
@@ -162,9 +180,12 @@ def main() -> int:
                   "> " + p["body"][:500].replace("\n", " ") + ("…" if len(p["body"]) > 500 else ""), "", "**Draft reply:**", "",
                   draft(p, p["kind"]), "", "---", ""]
     if not found:
-        lines.append("Nothing new this week. Nothing to do.")
+        lines.append("No clear late-invoice questions this week.")
+    if maybe:
+        lines += ["", "## Possibly relevant (no draft; read before deciding)", ""]
+        lines += [f"- r/{p['subreddit']} · {p['published']} · [{p['title']}]({p['url']})" for p in maybe]
     Path(args.out).write_text("\n".join(lines), encoding="utf-8")
-    seen |= {p["id"] for p in found}
+    seen |= {p["id"] for p in found} | {p["id"] for p in maybe}
     seen_path.write_text(json.dumps(sorted(seen)), encoding="utf-8")
     print(f"\n{len(found)} threads -> {args.out}")
     return 0

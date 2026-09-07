@@ -1,0 +1,27 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: ["3.11", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - run: python -m unittest discover -s tests -v
+      - run: pip install . && badcop --version
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build -t badcop:ci .
+      - run: |
+          mkdir ws && docker run --rm -v "$PWD/ws:/data" --entrypoint badcop badcop:ci init --dir /data
+          docker run --rm -v "$PWD/ws:/data" badcop:ci
+          docker run --rm -v "$PWD/ws:/data" badcop:ci report --format csv

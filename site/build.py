@@ -92,6 +92,67 @@ INTEGRATIONS = [
     ("invoice-ninja", "Invoice Ninja", "Invoice Ninja (self-hosted or cloud) exports invoices and payments as CSV from Settings > Import/Export. A natural pairing for anyone already self-hosting."),
 ]
 
+JURISDICTIONS = [
+    {"slug": "uk", "name": "the UK", "title": "Late payment interest and fees on invoices in the UK",
+     "summary": "For business-to-business and public-sector invoices, the Late Payment of Commercial Debts (Interest) Act 1998 gives you a statutory right to interest at 8% above the Bank of England base rate, plus a fixed compensation sum per invoice, even if your contract says nothing about late fees.",
+     "points": [
+        "Statutory interest: 8 percentage points above the Bank of England base rate. The base rate used is the one in force on 30 June or 31 December before the invoice became overdue, so the rate is fixed for six months at a time.",
+        "Fixed compensation per late invoice: £40 for debts under £1,000, £70 for £1,000 to £9,999.99, £100 for £10,000 or more. Since 2013 you can also claim reasonable recovery costs above the fixed sum.",
+        "It applies to B2B and business-to-public-sector contracts, not to consumers.",
+        "If your contract sets its own late-payment terms they replace the statutory ones, but only if they give a substantial remedy; a token rate can be struck out.",
+        "Interest runs from the day after the due date. With no agreed due date, the statutory default is 30 days after the invoice or delivery, whichever is later."],
+     "badcop": "Set <code>late_fee_pct</code> to the annualised statutory rate divided by 12 (for example base rate 4% + 8% = 12% a year, so 1.0 per month), and put the fixed compensation in <code>late_fee_flat</code> (40, 70 or 100 depending on your typical invoice size). Say \"statutory interest under the Late Payment of Commercial Debts (Interest) Act 1998\" in the final-notice template.",
+     "sources": [("Late Payment of Commercial Debts (Interest) Act 1998: the rate of statutory interest (Penningtons)", "https://www.penningtonslaw.com/insights/late-payment-of-commercial-debts-interest-act-1998-the-rate-of-statutory-interest/"),
+                 ("Late payment fees UK: how much you can legally charge (Paidnice)", "https://www.paidnice.com/blog/late-payment-fees-uk"),
+                 ("Statutory interest on late payments in the UK (Sprintlaw)", "https://sprintlaw.co.uk/articles/statutory-interest-on-late-payments-in-the-uk/")]},
+    {"slug": "eu", "name": "the EU", "title": "Late payment interest on invoices in the EU (Directive 2011/7/EU)",
+     "summary": "Across the EU, Directive 2011/7/EU gives businesses a statutory right to interest on late commercial payments at the ECB reference rate plus at least 8 percentage points, plus a fixed €40 minimum for recovery costs, on top of whatever your contract says.",
+     "points": [
+        "Statutory interest: the European Central Bank reference rate plus at least 8 percentage points. For the second half of 2026 that works out to 10.40% a year (reference rate 2.40% plus 8). Member states transpose the directive, so check your national implementation for the exact rate and any higher national margin.",
+        "Fixed compensation: a minimum of €40 per late invoice for recovery costs, without needing to prove costs; reasonable costs above that can also be claimed.",
+        "Default payment terms: 30 days unless otherwise agreed; B2B terms beyond 60 days must not be grossly unfair to the creditor; public authorities generally must pay within 30 days.",
+        "A 2023 Commission proposal to replace the directive with a stricter regulation (30-day cap, non-waivable interest) stalled in the Council; as of 2026 the 2011 directive still applies.",
+        "Consumers are not covered; this is business-to-business and business-to-public-authority."],
+     "badcop": "Set <code>late_fee_pct</code> to roughly the annual statutory rate divided by 12 (10.40% a year ≈ 0.87 per month in H2 2026) and <code>late_fee_flat = 40</code>. Cite \"statutory interest under Directive 2011/7/EU as implemented in [your country]\" in the final notice.",
+     "sources": [("Late payment: European Commission, Internal Market", "https://single-market-economy.ec.europa.eu/smes/challenges-and-resilience/late-payment_en"),
+                 ("EU Late Payment Regulation: what was proposed, what failed (LatePayClaim)", "https://latepayclaim.com/blog/eu-late-payment-regulation-2026"),
+                 ("Statutory late payment interest rates 2026 (LatePayClaim)", "https://latepayclaim.com/rates/")]},
+    {"slug": "us", "name": "the United States", "title": "Charging late fees on invoices in the United States",
+     "summary": "There is no federal statutory late-payment interest for private invoices in the US. A late fee is enforceable only if the client agreed to it in advance, in a contract or in invoice terms accepted before the work, and it must stay within your state's usury limits and be reasonable rather than a penalty.",
+     "points": [
+        "Late fees are contractual. Put the rate, the grace period and how it is calculated in the contract or the terms the client accepts before you start; adding a fee to an invoice after the fact is generally not enforceable.",
+        "The common B2B convention is 1% to 2% per month (12% to 24% a year); 1.5% per month is the most frequently quoted figure.",
+        "State usury laws cap interest, and the caps vary widely (some states have no cap on commercial contracts; others are in the 10% to 20% range). Check your state before choosing a rate.",
+        "A fee that looks like a punishment rather than compensation for your costs can be struck down as a penalty; keep it proportionate.",
+        "Prompt-payment statutes exist for government contracts at the federal and state level and set their own interest rules; they do not apply to private B2B work."],
+     "badcop": "A typical configuration is <code>late_fee_pct = 1.5</code> with <code>grace_days</code> of 0 to 5, and no flat fee unless your contract has one. Make the final-notice template quote the clause: \"per section X of our agreement, a late fee of 1.5% per month applies to balances more than N days past due\".",
+     "sources": [("Late fees on invoices: what's legal and how much (Billbooks)", "https://www.billbooks.com/blog/can-you-charge-late-fees-on-invoices/"),
+                 ("Guide to charging late fees and interest on unpaid invoices (business.com)", "https://www.business.com/articles/charging-interest-and-late-fees/"),
+                 ("Maximum late fee by state in 2026 (FlexPoint)", "https://www.getflexpoint.com/post/maximum-late-invoice-fee-laws-by-state")]},
+    {"slug": "australia", "name": "Australia", "title": "Charging interest and late fees on invoices in Australia",
+     "summary": "In Australia you can charge interest on overdue invoices if the customer agreed to it before you supplied the goods or services, the rate is transparent, and it is not so high that a court would call it a penalty. Most small businesses use 10% to 12% a year.",
+     "points": [
+        "The clause must be agreed in advance, in written trading terms the customer accepted (signature, tick-box, or clear assent), and restated on the invoice. You generally cannot add interest to an invoice that carried no such term.",
+        "The rate must not be extravagant or unconscionable; 10% to 12% per annum is within the range courts have accepted, and rates above about 15% risk being treated as an unenforceable penalty.",
+        "The unfair contract terms regime applies to standard-form contracts with consumers and with small businesses, so a one-sided late-fee clause in your standard terms can be challenged.",
+        "Sales to consumers must also comply with the Australian Consumer Law."],
+     "badcop": "<code>late_fee_pct</code> of about 1.0 (12% a year) with a short grace period is the conventional setting. Put the clause text in the final-notice template so the email quotes the terms the client accepted.",
+     "sources": [("Late payment interest in Australia: how to charge it legally (Sprintlaw)", "https://sprintlaw.com.au/articles/late-payment-interest-in-australia-how-to-charge-it-legally/"),
+                 ("Are late payment fees legal in Australia? (LegalVision)", "https://legalvision.com.au/late-payment-fees-legal-australia/"),
+                 ("How much can I charge for late fees in Australia? (Paidnice)", "https://www.paidnice.com/blog/late-fees-in-australia")]},
+    {"slug": "canada", "name": "Canada", "title": "Charging interest on overdue invoices in Canada",
+     "summary": "Canada's federal Interest Act has a trap for small businesses: if your terms state interest for a period shorter than a year (\"2% per month\") without also stating the equivalent annual rate, the recoverable interest is capped at 5% a year. State both rates and you can charge what was agreed.",
+     "points": [
+        "Section 4 of the Interest Act: interest expressed per day, week or month is limited to 5% per annum unless the contract also states the equivalent yearly rate. \"1.5% per month (18% per annum)\" is enforceable; \"1.5% per month\" alone may be cut to 5%.",
+        "The clause must be agreed before the debt arises, in the contract or accepted terms, not added on the invoice afterwards.",
+        "The Criminal Code caps the effective annual rate on any agreement; commercial rates in the 12% to 24% range are far below it, but a fee structure that compounds or stacks flat penalties can push the effective rate up.",
+        "Provincial court-ordered interest rules apply if you sue; they differ from what you can charge contractually."],
+     "badcop": "Use a monthly <code>late_fee_pct</code> and make sure the templates and your terms state both figures, for example \"1.5% per month (18% per annum)\". BadCop computes simple interest by month, which matches that wording.",
+     "sources": [("Charging interest and late fees on overdue invoices in Canada (Vanguard Collection)", "https://www.vanguardcollection.com/articles/charging-interest-and-late-fees-on-overdue-invoices-in-canada-what-b2b-creditors-can-actually-recover"),
+                 ("Is your interest rate enforceable? (Andriessen & Associates)", "https://andriessen.ca/is-your-interest-rate-enforceable/"),
+                 ("How much can I charge for late fees in Canada? (Paidnice)", "https://www.paidnice.com/blog/late-fees-in-canada")]},
+]
+
 FAQ = [
     ("Will this annoy my clients?", "The default copy is courteous through the firm step and factual in the final notice. Nothing threatens; the last step goes to you, not to the client. You can preview and rewrite every email before anything is sent."),
     ("Can I charge late fees?", "Only if your contract or invoice terms say so. BadCop applies whatever percentage and grace period you enter and nothing else. Set it to zero if you have no such terms."),
@@ -115,7 +176,7 @@ def layout(title: str, description: str, body: str, path: str, depth: int) -> st
 <link rel="canonical" href="{canonical}"><link rel="stylesheet" href="{rel}style.css?v={CSS_HASH}">
 <meta property="og:title" content="{e(title)}"><meta property="og:description" content="{e(description)}"><meta property="og:type" content="website">
 </head><body>
-<header class="top"><div class="wrap"><a class="brand" href="{rel}">Bad<span>Cop</span></a><nav><a href="{rel}templates/">Templates</a><a href="{rel}late-fee-calculator/">Late-fee calculator</a><a href="{rel}reminder-schedule/">Schedules</a><a href="{rel}integrations/">Integrations</a><a href="{REPO}">GitHub</a></nav></div></header>
+<header class="top"><div class="wrap"><a class="brand" href="{rel}">Bad<span>Cop</span></a><nav><a href="{rel}templates/">Templates</a><a href="{rel}late-fee-calculator/">Late-fee calculator</a><a href="{rel}reminder-schedule/">Schedules</a><a href="{rel}integrations/">Integrations</a><a href="{rel}late-fees/">Late fees by country</a><a href="{REPO}">GitHub</a></nav></div></header>
 <main class="wrap">
 {body}
 </main>
@@ -191,6 +252,7 @@ badcop run --dry-run # read every email before anything is sent</code></pre>
 <div class="grid">{tpl_cards}
 <a class="card" href="late-fee-calculator/"><b>Late-fee calculator</b><span>What an overdue invoice is costing, by day</span></a>
 <a class="card" href="reminder-schedule/"><b>Reminder schedules</b><span>Ladders for net 7 to net 60 terms</span></a>
+<a class="card" href="late-fees/"><b>Late fees by country</b><span>UK, EU, US, Australia, Canada, with sources</span></a>
 <a class="card" href="guides/how-to-chase-unpaid-invoices/"><b>How to chase unpaid invoices</b><span>The full playbook, no tool required</span></a>
 </div>
 
@@ -253,7 +315,7 @@ def page_calculator() -> None:
 <h2>Before you charge a fee</h2>
 <ul>
 <li><b>It has to be in your terms.</b> A late fee that was never agreed is unenforceable and will cost you the client. Put it in the contract and on the invoice.</li>
-<li><b>Know your jurisdiction.</b> Some places cap interest on commercial debt; some (the UK, the EU) set a statutory rate you can claim even without a clause. This page is not legal advice.</li>
+<li><b>Know your jurisdiction.</b> Some places cap interest on commercial debt; some (the UK, the EU) set a statutory rate you can claim even without a clause. See the <a href="../late-fees/">rules by country</a>. This page is not legal advice.</li>
 <li><b>State it before you apply it.</b> Mention the terms in the <a href="../templates/firm-invoice-reminder-email/">firm reminder</a>, apply it in the <a href="../templates/final-notice-invoice-email/">final notice</a>.</li>
 </ul>
 <p>BadCop applies exactly this calculation from your final-notice step onward, using the rate and grace period you configure. <a href="{REPO}">Get it on GitHub.</a></p>
@@ -357,6 +419,33 @@ badcop run                       # schedule this daily</code></pre>
                                          f"Export invoices from {name} into BadCop for an escalating reminder ladder with contractual late fees and payment matching.", body, f"integrations/{slug}", 2))
 
 
+def page_jurisdictions_index() -> None:
+    cards = "".join(f'<a class="card" href="{j["slug"]}/"><b>{e(j["title"])}</b><span>{e(j["summary"][:100])}…</span></a>' for j in JURISDICTIONS)
+    body = f"""<p class="crumbs"><a href="../">BadCop</a> › Late fees by jurisdiction</p>
+<h1>Can I charge a late fee on an invoice? Rules by country</h1>
+<p class="lead">What the law says about interest and fees on overdue commercial invoices, country by country, with sources. Two things are true almost everywhere: the fee has to be agreed before the work, and it has to be proportionate.</p>
+<div class="grid">{cards}</div>
+<p class="note">This is general information with sources, not legal advice. Rules change, national implementations differ, and consumer contracts have their own regimes. Check with an adviser before relying on any of it.</p>
+"""
+    write("late-fees", layout("Can I charge a late fee on an invoice? Rules by country (UK, EU, US, Australia, Canada)",
+                              "Late payment interest and fee rules for commercial invoices in the UK, EU, US, Australia and Canada, with sources and how to configure them.", body, "late-fees", 1))
+
+
+def page_jurisdiction(j: dict) -> None:
+    points = "".join(f"<li>{e(x)}</li>" for x in j["points"])
+    sources = "".join(f'<li><a href="{u}" rel="nofollow">{e(t)}</a></li>' for t, u in j["sources"])
+    body = f"""<p class="crumbs"><a href="../../">BadCop</a> › <a href="../">Late fees by jurisdiction</a> › {e(j["name"]).capitalize() if j["name"][0].islower() else e(j["name"])}</p>
+<h1>{e(j["title"])}</h1>
+<p class="lead">{e(j["summary"])}</p>
+<h2>The rules</h2><ul>{points}</ul>
+<h2>Configuring it in BadCop</h2><p>{j["badcop"]}</p>
+<p>Work the numbers with the <a href="../../late-fee-calculator/">late-fee calculator</a>, and see the <a href="../../templates/final-notice-invoice-email/">final-notice template</a> that applies the fee.</p>
+<h2>Sources</h2><ul>{sources}</ul>
+<p class="note">General information, not legal advice. Verified against the sources above in September 2026; rates and rules change. If money is at stake, ask a lawyer or accountant in your jurisdiction.</p>
+"""
+    write(f"late-fees/{j['slug']}", layout(f"{j['title']} | BadCop", j["summary"][:155], body, f"late-fees/{j['slug']}", 2))
+
+
 def page_guide() -> None:
     body = f"""<p class="crumbs"><a href="../../">BadCop</a> › Guides › How to chase unpaid invoices</p>
 <h1>How to chase unpaid invoices without losing the client</h1>
@@ -408,6 +497,9 @@ def main() -> None:
     for slug, name, blurb in INTEGRATIONS:
         page_integration(slug, name, blurb)
     page_guide()
+    page_jurisdictions_index()
+    for j in JURISDICTIONS:
+        page_jurisdiction(j)
     extras()
     print(f"Built {len(PAGES)} pages into {DIST}")
 

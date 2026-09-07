@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "badcop"
-version = "0.1.0"
+version = "0.1.1"
 description = "Chase unpaid invoices with an escalating, tone-controlled reminder ladder. You stay the good cop."
 readme = "README.md"
 requires-python = ">=3.11"

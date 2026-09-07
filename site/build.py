@@ -243,7 +243,7 @@ DRY RUN INV-1002 -&gt; hello@bluefern.example [courtesy, -3d]
 </ol>
 
 <h2>Install</h2>
-<pre><code>pip install git+{REPO}.git
+<pre><code>pip install badcop
 badcop init          # sample config, ledger and templates
 badcop run --dry-run # read every email before anything is sent</code></pre>
 <p>Python 3.11 or newer. Nothing else. <a href="{REPO}#readme">Full documentation on GitHub.</a> Don't want to run anything? <a href="https://github.com/Volcarone/badcop-template">Use the template</a>: a private repo that runs the ladder daily on GitHub Actions, with your invoices in a CSV or a Google Sheet.</p>
@@ -289,7 +289,7 @@ def page_template(t: dict) -> None:
 <h2>Tips</h2><ul>{tips}</ul>
 <h2>Automate it</h2>
 <p>This is the <code>{t["step"]}</code> step in BadCop's default ladder, sent at T{t["offset"]:+d} days from the due date. Put your invoices in a CSV, run one command a day, and every open invoice gets the right email at the right time, once.</p>
-<pre><code>pip install git+{REPO}.git
+<pre><code>pip install badcop
 badcop init &amp;&amp; badcop run --dry-run</code></pre>
 <h2>Other stages</h2><ul>{others}</ul>
 """

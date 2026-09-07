@@ -30,7 +30,7 @@ DRY RUN INV-1002 -> hello@bluefern.example [courtesy, -3d]
 Requires Python 3.11+ and nothing else.
 
 ```bash
-pip install .            # from a clone; or: pip install badcop
+pip install badcop       # or, from a clone: pip install .
 badcop --version
 ```
 

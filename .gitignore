@@ -12,3 +12,4 @@ aging_report.*
 match_report.md
 workspace/
 .DS_Store
+site/dist/

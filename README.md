@@ -143,7 +143,19 @@ Validation is strict and line-numbered. A ledger with a bad row sends nothing (e
 | `badcop match payments.csv [--apply]` | Match a bank / Stripe / PayPal export to open invoices. Without `--apply` it only reports. |
 | `badcop report [--format md\|csv]` | Aging report: outstanding, buckets, fees, per client. Writes `aging_report.md` and `.csv`. |
 
+| `badcop sync stripe [--dry-run]` | Pull open and paid invoices from Stripe Invoicing into the ledger (adds new ones, updates paid status). Needs `STRIPE_API_KEY` set to a restricted key with *Invoices: Read*. |
+
 Global options: `--config badcop.toml --ledger invoices.csv --state state.json`.
+
+### Google Sheets as the ledger
+
+Keep your invoices in a sheet with the columns above, then *File › Share › Publish to web*, choose the sheet and **CSV**, and pass the link:
+
+```bash
+badcop --ledger "https://docs.google.com/spreadsheets/d/e/…/pub?output=csv" run --dry-run
+```
+
+`run`, `preview` and `report` work from a URL ledger. `match --apply` and `sync` need a local file, because they write to it.
 
 ### Payment matching
 

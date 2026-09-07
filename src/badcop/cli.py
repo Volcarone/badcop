@@ -9,12 +9,13 @@ from pathlib import Path
 
 from . import __version__
 from .config import Config, ConfigError, load_config
-from .ledger import COLUMNS, LedgerError, load_ledger, save_ledger
+from .ledger import COLUMNS, LedgerError, is_url, load_ledger, save_ledger
 from .mailer import DryRunMailer, Message, SendError, SmtpMailer
 from .matcher import PaymentsError, apply_matches, load_payments, match_payments, match_report_md
 from .report import aging, report_csv, report_md
 from .schedule import build_due_step, plan
 from .state import State
+from .stripe import StripeError, api_key_from_env, fetch_invoices, merge, to_invoice
 from .templates import TemplateError, render, write_default_templates
 
 EXIT_OK, EXIT_CONFIG, EXIT_LEDGER, EXIT_SEND = 0, 1, 2, 3
@@ -102,7 +103,7 @@ def cmd_init(args: argparse.Namespace) -> int:
 
 def _load(args: argparse.Namespace) -> tuple[Config, list, State]:
     config = load_config(Path(args.config))
-    invoices = load_ledger(Path(args.ledger), config)
+    invoices = load_ledger(args.ledger, config)
     state = State.load(Path(args.state))
     return config, invoices, state
 
@@ -171,11 +172,32 @@ def cmd_match(args: argparse.Namespace) -> int:
     Path(args.report).write_text(report, encoding="utf-8")
     print(report)
     if args.apply:
+        if is_url(args.ledger):
+            print("cannot write back to a URL ledger; mark these paid in the sheet yourself", file=sys.stderr)
+            return EXIT_LEDGER
         n = apply_matches(results)
         save_ledger(Path(args.ledger), invoices, backup=True)
         print(f"Marked {n} invoices paid in {args.ledger} (backup written to {args.ledger}.bak)")
     else:
         print("Dry run: re-run with --apply to mark the high-confidence matches as paid.")
+    return EXIT_OK
+
+
+def cmd_sync(args: argparse.Namespace) -> int:
+    config = load_config(Path(args.config))
+    if is_url(args.ledger):
+        print("sync writes to the ledger; use a local CSV, not a URL", file=sys.stderr)
+        return EXIT_LEDGER
+    ledger_path = Path(args.ledger)
+    invoices = load_ledger(ledger_path, config) if ledger_path.exists() else []
+    raw = fetch_invoices(api_key_from_env(args.api_key_env))
+    incoming = [i for i in (to_invoice(r, config.net_days) for r in raw) if i is not None]
+    invoices, added, updated = merge(invoices, incoming)
+    if args.dry_run:
+        print(f"Stripe: {len(raw)} invoices fetched, {len(incoming)} usable; would add {added} and update {updated} in {ledger_path}")
+        return EXIT_OK
+    save_ledger(ledger_path, invoices, backup=ledger_path.exists())
+    print(f"Stripe: {len(incoming)} invoices synced; {added} added, {updated} updated in {ledger_path}")
     return EXIT_OK
 
 
@@ -194,7 +216,7 @@ def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(prog="badcop", description="Chase unpaid invoices with an escalating reminder ladder. You stay the good cop.")
     p.add_argument("--version", action="version", version=f"badcop {__version__}")
     p.add_argument("--config", default="badcop.toml", help="path to badcop.toml")
-    p.add_argument("--ledger", default="invoices.csv", help="path to the invoice ledger CSV")
+    p.add_argument("--ledger", default="invoices.csv", help="path or https URL of the invoice ledger CSV (e.g. a Google Sheet published as CSV)")
     p.add_argument("--state", default="state.json", help="path to the send-log state file")
     sub = p.add_subparsers(dest="command", required=True)
 
@@ -226,6 +248,12 @@ def build_parser() -> argparse.ArgumentParser:
     s.add_argument("--report", default="match_report.md")
     s.set_defaults(func=cmd_match)
 
+    s = sub.add_parser("sync", help="pull open and paid invoices from a payment provider into the ledger")
+    s.add_argument("provider", choices=("stripe",))
+    s.add_argument("--api-key-env", default="STRIPE_API_KEY", help="environment variable holding the API key")
+    s.add_argument("--dry-run", action="store_true")
+    s.set_defaults(func=cmd_sync)
+
     s = sub.add_parser("report", help="aging report of open invoices")
     s.add_argument("--format", choices=("md", "csv"), default="md")
     s.add_argument("--today")
@@ -241,7 +269,7 @@ def main(argv: list[str] | None = None) -> int:
     except ConfigError as e:
         print(f"config error: {e}", file=sys.stderr)
         return EXIT_CONFIG
-    except (LedgerError, PaymentsError, TemplateError, ValueError) as e:
+    except (LedgerError, PaymentsError, TemplateError, StripeError, ValueError) as e:
         print(f"error: {e}", file=sys.stderr)
         return EXIT_LEDGER
 

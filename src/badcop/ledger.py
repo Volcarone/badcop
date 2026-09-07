@@ -3,6 +3,8 @@ from __future__ import annotations
 
 import csv
 import shutil
+import urllib.error
+import urllib.request
 from dataclasses import dataclass
 from datetime import date, datetime, timedelta
 from decimal import Decimal, InvalidOperation
@@ -99,11 +101,27 @@ def _row_to_invoice(row: dict[str, str], line: int, config: Config) -> Invoice:
                    pay_link=row.get("pay_link", ""), notes=row.get("notes", ""))
 
 
-def load_ledger(path: Path, config: Config) -> list[Invoice]:
+def is_url(value: str | Path) -> bool:
+    return str(value).lower().startswith(("http://", "https://"))
+
+
+def read_ledger_text(path: str | Path) -> str:
+    """Read the ledger from a file or an HTTPS URL (e.g. a Google Sheet published as CSV)."""
+    if is_url(path):
+        req = urllib.request.Request(str(path), headers={"User-Agent": "badcop"})
+        try:
+            with urllib.request.urlopen(req, timeout=30) as resp:
+                return resp.read().decode("utf-8-sig")
+        except (urllib.error.URLError, TimeoutError) as e:
+            raise LedgerError(f"could not fetch ledger from {path}: {e}") from e
     try:
-        text = path.read_text(encoding="utf-8-sig")
+        return Path(path).read_text(encoding="utf-8-sig")
     except FileNotFoundError as e:
         raise LedgerError(f"ledger not found: {path}") from e
+
+
+def load_ledger(path: str | Path, config: Config) -> list[Invoice]:
+    text = read_ledger_text(path)
     reader = csv.DictReader(text.splitlines())
     if not reader.fieldnames:
         raise LedgerError(f"{path}: empty file")

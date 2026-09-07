@@ -219,7 +219,9 @@ docker run --rm -v "$PWD/workspace:/data" badcop report
 
 Files written into the mount (`state.json`, reports, `invoices.csv.bak`) are owned by root unless you add `--user "$(id -u):$(id -g)"`.
 
-**GitHub Actions** (ledger in a private repo, secret in repository settings):
+**GitHub Actions, the easy way:** use the [badcop-template](https://github.com/Volcarone/badcop-template) repository. Click *Use this template*, make it private, add your invoices and one secret, and it runs the ladder every morning on GitHub's free minutes. Dry-run by default until you flip a variable.
+
+**GitHub Actions, by hand** (ledger in a private repo, secret in repository settings):
 
 ```yaml
 on:

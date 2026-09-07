@@ -176,7 +176,7 @@ DRY RUN INV-1002 -&gt; hello@bluefern.example [courtesy, -3d]
 <h2>How it works</h2>
 <ol>
 <li><b>Keep a CSV of your invoices.</b> Export it from <a href="integrations/">Wave, FreshBooks, QuickBooks, Stripe or whatever you use</a>, or type it in.</li>
-<li><b>Run <code>badcop run</code> once a day</b> with cron, a systemd timer, GitHub Actions or Docker.</li>
+<li><b>Run <code>badcop run</code> once a day</b> with cron, a systemd timer or Docker. Or skip the server entirely: the <a href="https://github.com/Volcarone/badcop-template">template repository</a> runs it every morning on GitHub Actions for free.</li>
 <li><b>Export a bank CSV when money comes in.</b> <code>badcop match bank.csv --apply</code> closes the matching invoices.</li>
 <li><b><code>badcop report</code></b> tells you what is outstanding, how old it is, and what it is costing your clients.</li>
 </ol>
@@ -185,7 +185,7 @@ DRY RUN INV-1002 -&gt; hello@bluefern.example [courtesy, -3d]
 <pre><code>pip install git+{REPO}.git
 badcop init          # sample config, ledger and templates
 badcop run --dry-run # read every email before anything is sent</code></pre>
-<p>Python 3.11 or newer. Nothing else. <a href="{REPO}#readme">Full documentation on GitHub.</a></p>
+<p>Python 3.11 or newer. Nothing else. <a href="{REPO}#readme">Full documentation on GitHub.</a> Don't want to run anything? <a href="https://github.com/Volcarone/badcop-template">Use the template</a>: a private repo that runs the ladder daily on GitHub Actions, with your invoices in a CSV or a Google Sheet.</p>
 
 <h2>Free resources</h2>
 <div class="grid">{tpl_cards}

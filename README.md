@@ -2,6 +2,8 @@
 
 **The polite-but-firm invoice chaser. You stay the good cop.**
 
+Website, email templates and late-fee calculator: **https://volcarone.github.io/badcop/**
+
 BadCop is a zero-dependency command-line tool that chases unpaid invoices for you. Point it at a CSV of your invoices and it sends an escalating ladder of reminders from a separate "accounts" identity, applies the late fee your contract already allows, marks invoices paid from a bank or Stripe export, and hands you a one-page aging report. It never takes money and never invents a fee; it just does the awkward part on schedule.
 
 Built for solo freelancers, consultants and small agencies who lose real money because chasing clients feels rude. One r/smallbusiness poster tallied **$3,200** in late and unpaid invoices in a single year for exactly that reason.

@@ -203,6 +203,8 @@ docker run --rm -v "$PWD/workspace:/data" -e BADCOP_SMTP_PASSWORD badcop run
 docker run --rm -v "$PWD/workspace:/data" badcop report
 ```
 
+Files written into the mount (`state.json`, reports, `invoices.csv.bak`) are owned by root unless you add `--user "$(id -u):$(id -g)"`.
+
 **GitHub Actions** (ledger in a private repo, secret in repository settings):
 
 ```yaml

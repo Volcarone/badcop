@@ -1,0 +1,61 @@
+r/smallbusiness  "how do you automate" ... JSON blocked (403) -> RSS fallback ...     HTTP 429; waiting 36s (attempt 1/5)
+exact=5+1 keyword=94 (loose=100) ... 100 results, 100 new
+r/smallbusiness  "I would pay for" ... exact=0+0 keyword=23 (loose=100) ... 23 results, 23 new
+r/smallbusiness  "any tool that can" ... exact=2+1 keyword=98 (loose=100) ... 101 results, 94 new
+r/smallbusiness  "hate doing this manually" ... exact=0+1 keyword=8 (loose=9) ... 9 results, 9 new
+r/freelance      "how do you automate" ... exact=0+0 keyword=1 (loose=1) ... 1 results, 1 new
+r/freelance      "I would pay for" ... exact=0+0 keyword=3 (loose=13) ... 3 results, 3 new
+r/freelance      "any tool that can" ... exact=0+0 keyword=4 (loose=4) ... 4 results, 3 new
+r/freelance      "hate doing this manually" ... exact=0+0 keyword=0 (loose=0) ... 0 results, 0 new
+r/ecommerce      "how do you automate" ... exact=0+1 keyword=65 (loose=66) ... 66 results, 66 new
+r/ecommerce      "I would pay for" ... exact=0+0 keyword=59 (loose=100) ... 59 results, 35 new
+r/ecommerce      "any tool that can" ... exact=0+0 keyword=79 (loose=79) ... 79 results, 30 new
+r/ecommerce      "hate doing this manually" ... exact=0+0 keyword=5 (loose=5) ... 5 results, 1 new
+r/sysadmin       "how do you automate" ... exact=3+2 keyword=95 (loose=100) ... 100 results, 100 new
+r/sysadmin       "I would pay for" ... exact=1+0 keyword=28 (loose=100) ... 29 results, 28 new
+r/sysadmin       "any tool that can" ... exact=1+2 keyword=96 (loose=100) ... 99 results, 95 new
+r/sysadmin       "hate doing this manually" ... exact=0+0 keyword=7 (loose=8) ... 7 results, 6 new
+
+Fetching metrics for 40 posts ...
+  [1/40]  17 comments  How do you automate direct outreach?
+  [2/40]   4 comments  How do you automate customer service?
+  [3/40]  51 comments  I just finished my 2025 "Post-Mortem." I realized I lost over $3k beca
+  [4/40]   7 comments  Solo backflow tech – struggling with annual client retention & schedul
+  [5/40]   7 comments  The absolute hell of chasing clients for basic project details.
+  [6/40]   6 comments  The "Co-Founder" framework for AI. How to automate without ruining you
+  [7/40]  15 comments  Looking for Suggestion on marketing with small amount
+  [8/40]   1 comments  Bulk shipping guidance
+  [9/40]  11 comments  Is there a tool that helps non-analyst small business owners get dashb
+  [10/40]  13 comments  Is there a way to automate SaaS documentation?
+  [11/40]  28 comments  How Much Should I Charge For A Marketing Director/Manager Role?
+  [12/40] 200 comments  How do you automate certificates?
+  [13/40]   8 comments  How do you automate infrastructure inventory across VMs, networks, cam
+  [14/40]   7 comments  How do you automate recurring servers tasks without over-engineering?
+  [15/40]  64 comments  What should a new SysAdmin know first?
+  [16/40]   8 comments  How are you handling TLS cert renewal automation for Peoplesoft Campus
+  [17/40]  18 comments  Freshdesk ticketing no longer free - alternatives?
+  [18/40]  14 comments  Managing driver updates across custom builds...
+  [19/40]  69 comments  Tool for looking for duplicate files in a file system via hash.
+  [20/40]  25 comments  Low-cost option for MFA for Meraki Client VPN (IPsec)?
+  [21/40]  22 comments  E-commerce Industry News Recap 🔥 Week of May 25th, 2026
+  [22/40]  10 comments  E-commerce Industry News Recap 🔥 Week of August 3rd, 2026
+  [23/40]   6 comments  E-commerce Industry News Recap 🔥 Week of August 31st, 2026
+  [24/40]  10 comments  E-commerce Industry News Recap 🔥 Week of June 29th, 2026
+  [25/40]   8 comments  E-commerce Industry News Recap 🔥 Week of July 13th, 2026
+  [26/40]  20 comments  E-commerce Industry News Recap 🔥 Week of Mar 23rd, 2026
+  [27/40]   2 comments  E-commerce Industry News Recap 🔥 Week of August 17th, 2026
+  [28/40]   3 comments  E-commerce Industry News Recap 🔥 Week of August 24th, 2026
+  [29/40]   1 comments  E-commerce Industry News Recap 🔥 Week of August 10th, 2026
+  [30/40]   2 comments  E-commerce Industry News Recap 🔥 Week of July 20th, 2026
+  [31/40]   4 comments  E-commerce Industry News Recap 🔥 Week of July 6th, 2026
+  [32/40]  20 comments  E-commerce Industry News Recap 🔥 Week of Jan 26th, 2026
+  [33/40]  15 comments  E-commerce Industry News Recap 🔥 Week of Feb 16th, 2026
+  [34/40]  10 comments  E-commerce Industry News Recap 🔥 Week of Mar 9th, 2026
+  [35/40]   3 comments  E-commerce Industry News Recap 🔥 Week of June 1st, 2026
+  [36/40]   4 comments  E-commerce Industry News Recap 🔥 Week of May 4th, 2026
+  [37/40]   0 comments  E-commerce Industry News Recap 🔥 Week of June 22nd, 2026
+  [38/40]  12 comments  E-commerce Industry News Recap 🔥 Week of Feb 23rd, 2026
+  [39/40]   7 comments  E-commerce Industry News Recap 🔥 Week of April 13th, 2026
+  [40/40]   3 comments  E-commerce Industry News Recap 🔥 Week of April 27th, 2026
+
+Wrote 594 unique posts to /Users/albin/Claude/Claude Code/market-cycle/pain_points.json  (json_blocked=True)

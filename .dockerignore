@@ -1,0 +1,8 @@
+.git
+__pycache__
+*.pyc
+tests
+*.json
+*.log
+pain_points.json
+scored_opportunities.json

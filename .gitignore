@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+.venv/
+*.egg-info/
+build/
+dist/
+# runtime files from a badcop workspace
+state.json
+*.bak
+*.tmp
+aging_report.*
+match_report.md
+workspace/
+.DS_Store

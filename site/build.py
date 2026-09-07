@@ -2,8 +2,8 @@
 """Generate the BadCop marketing site into site/dist (static HTML, no dependencies)."""
 from __future__ import annotations
 
+import hashlib
 import html
-import json
 import shutil
 from datetime import date
 from pathlib import Path
@@ -13,6 +13,7 @@ DIST = ROOT / "dist"
 REPO = "https://github.com/Volcarone/badcop"
 SITE = "https://volcarone.github.io/badcop"
 TODAY = date.today().isoformat()
+CSS_HASH = hashlib.sha256((ROOT / "style.css").read_bytes()).hexdigest()[:8]  # cache-busting query for the stylesheet
 
 # ----------------------------------------------------------------------------- content data
 TEMPLATES = [
@@ -111,7 +112,7 @@ def layout(title: str, description: str, body: str, path: str, depth: int) -> st
     return f"""<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{e(title)}</title><meta name="description" content="{e(description)}">
-<link rel="canonical" href="{canonical}"><link rel="stylesheet" href="{rel}style.css">
+<link rel="canonical" href="{canonical}"><link rel="stylesheet" href="{rel}style.css?v={CSS_HASH}">
 <meta property="og:title" content="{e(title)}"><meta property="og:description" content="{e(description)}"><meta property="og:type" content="website">
 </head><body>
 <header class="top"><div class="wrap"><a class="brand" href="{rel}">Bad<span>Cop</span></a><nav><a href="{rel}templates/">Templates</a><a href="{rel}late-fee-calculator/">Late-fee calculator</a><a href="{rel}reminder-schedule/">Schedules</a><a href="{rel}integrations/">Integrations</a><a href="{REPO}">GitHub</a></nav></div></header>

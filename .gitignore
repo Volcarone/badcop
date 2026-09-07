@@ -13,3 +13,5 @@ match_report.md
 workspace/
 .DS_Store
 site/dist/
+scout.log
+scout_raw.json

@@ -394,6 +394,8 @@ def main() -> None:
         shutil.rmtree(DIST)
     DIST.mkdir()
     shutil.copy(ROOT / "style.css", DIST / "style.css")
+    for f in (ROOT / "static").glob("*"):  # verification files and other root-level statics
+        shutil.copy(f, DIST / f.name)
     page_home()
     page_templates_index()
     for t in TEMPLATES:
